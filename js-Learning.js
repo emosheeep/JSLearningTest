@@ -228,4 +228,38 @@ function nodeIter(){
 
 }
 
-这是被插入的option节点
+/*
+ * DOM范围操作
+ */
+doRange()
+function doRange(){
+	var r1 = document.createRange()
+
+	// 只包含了四个输入框
+	var identity = document.forms["identity"]
+	r1.setStartBefore(identity.region)
+	r1.setEndAfter(identity.other)
+
+	// r1.deleteContents() //删除范围内DOM节点
+	// var part = r1.extractContents() //删除并返回范围内DOM节点
+	// var part = r1.cloneContents() //克隆范围内节点
+	// document.forms["testform"].appendChild(part)
+	// r1.insertNode(node) //范围内首部插入节点
+	
+	//环绕范围插入节点
+	var r2 = document.createRange()
+	r2.setStart(node.firstChild, 1)
+	r2.setEnd(node.firstChild, 4)
+
+	var span = document.createElement("span")
+
+	//几种不同的设置css的方式
+	//1.利用元素的style属性（本质是一个CSSStyleDeclaration对象）的属性cssText属性
+	span.style.cssText = "background-color: red;color: white"
+	// document.styleSheets[1].insertRule("span{background-color: red;color: white}", 0)
+	r2.surroundContents(span)
+
+	// 有必要理一下关系
+	console.log(document.styleSheets[1].cssRules[0].cssText)
+	console.log(span.style.cssText)
+}
