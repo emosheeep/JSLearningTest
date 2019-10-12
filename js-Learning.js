@@ -146,7 +146,7 @@ function focusTab(formName){
 	}
 	//焦点后退函数
 	function tabBack(event){
-		if (event.keyCode != 8) {
+		if (event.keyCode != 8) { //监听backspace键
 			return
 		} else {
 			if (event.target.value.length == 0) {
