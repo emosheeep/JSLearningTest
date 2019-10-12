@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>js学习</title>
+	<script defer="defer" src="js-Learning.js"></script>
+	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">  
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
+</head>
+<body>
+	<a href="js2.html">点击切换</a>
+	<h3>身份证号光标自动切换</h3>
+	<form name="identity">
+		<input type="text" name="region" maxlength="6">
+		<input type="text" name="year" maxlength="4">
+		<input type="text" name="date" maxlength="4">
+		<input type="text" name="other" maxlength="4">
+		<input type="reset" name="reset">
+	</form>
+	<iframe name="richedit" id="richedit" src="js2.html"></iframe>
+	<div id="box">
+		<p id="p1" class="pp" style="font-size: 18px">自定义表单事件测试</p>
+		<form name="testform">
+			<input type="text" class="form-control" name="username" maxlength="11" value="输入用户名/邮箱/手机号">
+			<input type="password" class="form-control" name="password" maxlength="16" required>
+			<input type="submit" name="submit" class="btn btn-success" value="Click Me">
+			<button type="reset" name="reset" class="btn btn-danger">重置</button>
+			<select name="select">
+				<option>第一项</option>
+				<option>第二项</option>
+				<option>第三项</option>
+				<option>第四项</option>
+			</select>
+			<input type="radio" name="">
+		</form>
+	</div>
+	<ul id="myMenu" class="list-group">
+		<li class="list-group">这是第一项</li>
+		<li class="list-group">这是第二项</li>
+		<li class="list-group">这是第三项</li>
+		<li class="list-group">这是第四项</li>
+	</ul>
+	<div id="app">
+		<h1>事件委托示例</h1>
+		<div class="btnBox" @click="sayName">
+			<button v-for="item in items" :class="itemClass()">{{item}}</button>
+		</div>
+	</div>
+
+</body>
+<script>
+	new Vue({
+		el: "#app",
+		data: {
+			defaultBtn: "btn",
+			items: ['按钮1', '按钮2','按钮3','按钮4','按钮5','按钮6','按钮7','按钮8'],
+			
+			classes: ['btn-default', 'btn-info', 'btn-success', 'btn-warning', 'btn-danger', 'btn-primary']
+		},
+		methods: {
+			sayName: function(event){
+				console.log(event.target.textContent)
+			},
+			itemClass: function(){
+				let arr = [this.defaultBtn, this.classes[Math.floor(Math.random()*this.classes.length)]]
+				return arr
+			}
+		}
+	})
+</script>
+
+<style type="text/css">
+	iframe[name='richedit']{
+		width: 300px;
+		height: 200px;
+		float: right;
+	}
+	.btnBox{
+		width: 300px;
+		display: flex;
+		flex-wrap: wrap; 
+		justify-content: space-around;
+		border: 1px red solid;
+		padding: 10px
+	}
+	#myMenu{
+		position: absolute;
+		text-align: center;
+		display:none;
+		background-color: white;
+		border: 1px solid grey;
+		width: 120px;
+		border-radius: 3px;
+		box-shadow: 3px 3px 5px rgba(0,0,0,0.3)
+	}
+	#myMenu li{
+		height: 30px;
+		line-height: 30px;
+		cursor: default;
+		list-style: none;
+		border-bottom: 1px grey solid;
+		margin: 0;
+	}
+	#myMenu li:last-child{
+		border: 0;
+	}
+	#myMenu li:hover{
+		background-color: rgba(0,0,0,0.1);
+	}
+	#myMenu li:active{
+		background-color: rgba(0,0,0,0.2);
+	}
+	form[name='testform']{
+		width: 300px;
+		border: 1px red solid;
+		padding: 10px;
+	}
+	form[name='identity']{
+		width: 450px;
+		border: 1px solid red;
+		padding: 5px;
+		display: flex;
+		justify-content: space-around;
+	}
+	form[name='identity'] input{
+		width: 75px;
+		text-align: center;
+	}
+</style>
+</html>
