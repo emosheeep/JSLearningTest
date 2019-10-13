@@ -250,7 +250,7 @@ function doRange(){
 	var r2 = document.createRange()
 	r2.setStart(node.firstChild, 1)
 	r2.setEnd(node.firstChild, 4)
-
+	// r2.collapse(true) // 将范围折叠到起点
 	var span = document.createElement("span")
 
 	//几种不同的设置css的方式
@@ -260,6 +260,17 @@ function doRange(){
 	r2.surroundContents(span)
 
 	// 有必要理一下关系StyleSheet相关对象之间的关系
-	console.log(document.styleSheets[1].cssRules[2].cssText)
-	console.log(span.style.cssText)
+	// console.log(document.styleSheets[1].cssRules[0].cssText)
+	// console.log(span.style.cssText)
+
+	//范围比较
+	var result = r1.compareBoundaryPoints(Range.END_TO_START, r2)
+	console.log(result)
+
+	// 垃圾回收
+	r1.detach();
+	r1 = null;
+	r2.detach();
+	r2 = null;
+
 }
