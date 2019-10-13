@@ -255,11 +255,11 @@ function doRange(){
 
 	//几种不同的设置css的方式
 	//1.利用元素的style属性（本质是一个CSSStyleDeclaration对象）的属性cssText属性
-	span.style.cssText = "background-color: red;color: white"
-	// document.styleSheets[1].insertRule("span{background-color: red;color: white}", 0)
+	// span.style.cssText = "background-color: red;color: white"
+	document.styleSheets[1].insertRule("span{background-color: red;color: white}", 0)
 	r2.surroundContents(span)
 
-	// 有必要理一下关系
-	console.log(document.styleSheets[1].cssRules[0].cssText)
+	// 有必要理一下关系StyleSheet相关对象之间的关系
+	console.log(document.styleSheets[1].cssRules[2].cssText)
 	console.log(span.style.cssText)
 }
