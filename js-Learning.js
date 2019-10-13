@@ -259,7 +259,13 @@ function doRange(){
 	// document.styleSheets[1].insertRule("span{background-color: red;color: white}", 0)
 	r2.surroundContents(span)
 
-	// 有必要理一下关系
-	console.log(document.styleSheets[1].cssRules[0].cssText)
-	console.log(span.style.cssText)
+	// 有必要理一下关系StyleSheet相关对象之间的关系
+	// console.log(document.styleSheets[1].cssRules[0].cssText)
+	// console.log(span.style.cssText)
+
+	// 垃圾回收
+	r1.detach();
+	r1 = null;
+	r2.detach();
+	r2 = null;
 }
