@@ -60,7 +60,10 @@
 		},
 		methods: {
 			sayName: function(event){
-				console.log(event.target.textContent)
+				var parent = document.querySelector(".btnBox")
+				if(event.target.parentNode == parent){
+					console.log(event.target.textContent)
+				}
 			},
 			itemClass: function(){
 				let arr = [this.defaultBtn, this.classes[Math.floor(Math.random()*this.classes.length)]]
@@ -74,7 +77,6 @@
 	iframe[name='richedit']{
 		width: 300px;
 		height: 200px;
-		float: right;
 	}
 	.btnBox{
 		width: 300px;

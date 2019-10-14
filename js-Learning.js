@@ -265,12 +265,34 @@ function doRange(){
 
 	//范围比较
 	var result = r1.compareBoundaryPoints(Range.END_TO_START, r2)
-	console.log(result)
+	// console.log(result)
 
 	// 垃圾回收
 	r1.detach();
 	r1 = null;
 	r2.detach();
 	r2 = null;
+}
 
+/*
+ * 跨文档消息传递
+*/
+message()
+function message(){
+	var iframeWindow = frames["richedit"]
+	var allowedSite = "http://127.0.0.1:8848"
+	
+	iframeWindow.onmessage = function(event){
+		if(event.origin == allowedSite){
+			console.log(event.target)
+			console.log(event.data)
+			event.source.postMessage("received!", allowedSite)
+			console.log(event.source == event.target)
+		}
+	}
+	
+	var post = iframeWindow.document.querySelector("#postmsg")
+	post.onclick = function(event){
+		iframeWindow.postMessage("这是一个秘密哦！", allowedSite)
+	}
 }
