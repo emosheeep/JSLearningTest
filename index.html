@@ -2,14 +2,14 @@
 <html>
 <head>
 	<title>js学习</title>
-	<script defer="defer" src="js-Learning.js"></script>
+	<script defer="defer" src="index.js"></script>
 	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">  
 	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
 	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
 </head>
 <body>
-	<a href="js2.html">点击切换</a>
+	<a href="anotherPage.html">点击切换</a>
 	<h3>身份证号光标自动切换</h3>
 	<form name="identity">
 		<input type="text" name="region" maxlength="6">
@@ -18,7 +18,20 @@
 		<input type="text" name="other" maxlength="4">
 		<input type="reset" name="reset">
 	</form>
-	<iframe name="richedit" id="richedit" src="js2.html"></iframe>
+	<iframe name="richedit" id="richedit" src="anotherPage.html"></iframe>
+	<div>
+		<button class="btn btn-info" id="postmsg" draggable="true">发送消息</button>
+		<button class="btn btn-success" id="getInfo">获取数据</button>
+	</div>
+	<div id="dragarea" contenteditable>
+		<h4>自定义拖放区域</h4>
+	</div>
+	<div style="border: red 1px solid; width: 200px;">
+		<p>状态管理：</p>
+		<button id="next">下一页</button>
+		<span>当前页面：</span>
+		<span id="page">0</span>
+	</div>
 	<div id="box">
 		<p id="p1" class="pp" style="font-size: 18px">自定义表单事件测试</p>
 		<form name="testform">
@@ -35,19 +48,18 @@
 			<input type="radio" name="">
 		</form>
 	</div>
-	<ul id="myMenu" class="list-group">
-		<li class="list-group">这是第一项</li>
-		<li class="list-group">这是第二项</li>
-		<li class="list-group">这是第三项</li>
-		<li class="list-group">这是第四项</li>
-	</ul>
 	<div id="app">
 		<h1>事件委托示例</h1>
 		<div class="btnBox" @click="sayName">
 			<button v-for="item in items" :class="itemClass()">{{item}}</button>
 		</div>
 	</div>
-
+	<ul id="myMenu" class="list-group">
+		<li class="list-group">这是第一项</li>
+		<li class="list-group">这是第二项</li>
+		<li class="list-group">这是第三项</li>
+		<li class="list-group">这是第四项</li>
+	</ul>
 </body>
 <script>
 	new Vue({
@@ -74,22 +86,19 @@
 </script>
 
 <style type="text/css">
-	iframe[name='richedit']{
+	#dragarea{
+		border: green 1px solid;
 		width: 300px;
-		height: 200px;
+		min-height: 80px;
 	}
-	.btnBox{
-		width: 300px;
-		display: flex;
-		flex-wrap: wrap; 
-		justify-content: space-around;
-		border: 1px red solid;
-		padding: 10px
+	iframe[name='richedit']{
+		width: 500px;
+		height: 200px;
 	}
 	#myMenu{
 		position: absolute;
 		text-align: center;
-		display:none;
+		display: none;
 		background-color: white;
 		border: 1px solid grey;
 		width: 120px;
@@ -113,6 +122,14 @@
 	#myMenu li:active{
 		background-color: rgba(0,0,0,0.2);
 	}
+	.btnBox{
+		width: 300px;
+		display: flex;
+		flex-wrap: wrap; 
+		justify-content: space-around;
+		border: 1px red solid;
+		padding: 10px
+	}
 	form[name='testform']{
 		width: 300px;
 		border: 1px red solid;
@@ -129,5 +146,6 @@
 		width: 75px;
 		text-align: center;
 	}
+	
 </style>
 </html>
