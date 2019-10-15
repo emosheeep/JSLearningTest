@@ -260,7 +260,8 @@ function doRange(){
 	
 	//以这种方式添加的会应用到所有标签，因为相当于直接在css里面写
 	// document.styleSheets[1].insertRule("span{background-color: red;color: white}", 0)
-	r2.surroundContents(span)
+	// r2.surroundContents(span)
+	r2.surroundContents(document.createElement("mark"))
 
 	// 有必要理一下关系StyleSheet相关对象之间的关系
 	// console.log(document.styleSheets[1].cssRules[0].cssText)
@@ -365,10 +366,8 @@ function drag(){
 	
 	btn.ondragstart = function(event){
 		//给蓝色发送消息按钮指定一副图像当发生拖动时显示在光标下方
-		event.dataTransfer.setDragImage(div, 30, 30)
-	}
-	
-	btn.ondragstart = function(event){
+		event.dataTransfer.setDragImage(this, 30, 100)
+		
 		//设置蓝色按钮的移动方式，注意三种方式，移动到自定义拖放区域时候光标都不一样
 		// event.dataTransfer.effectAllowed = "copy" // 光标为复制状态
 		// event.dataTransfer.effectAllowed = "move" // 光标为剪切状态
@@ -408,24 +407,60 @@ function ajax(){
 	var post = document.querySelector("#getInfo")
 	post.onclick = function(){
 		var xhr = new XMLHttpRequest()
-		xhr.open("GET", "example.txt", true)
 		var data = {
 			username: "144644",
 			password: "123546"
 		}
-		xhr.send(data)
+		
+		xhr.timeout = 100
+		xhr.ontimeout = function(){
+			console.error("请求超时")
+		}
+		
+		xhr.onprogress = function(event){
+			if (event.lengthComputable) {
+				console.log(event)
+			}
+		}	
 		
 		xhr.onreadystatechange = function(){
-			if (xhr.readyState == 4){
-				if(xhr.status >= 200 && xhr.status < 300 || xhr.status ==304){
-					console.log("数据获取成功！内容为："+xhr.responseText)
-				} else {
-					console.error("数据获取失败！")
+			try{
+				if (xhr.readyState == 4){
+					if(xhr.status >= 200 && xhr.status < 300 || xhr.status ==304){
+						console.log("数据获取成功！内容为："+xhr.responseText)
+					} else {
+						console.error("数据获取失败！")
+					}
 				}
+			}catch(e){
+				//TODO handle the exception
+				console.error(e)
 			}
 		}
+		
+		xhr.open("GET", "example.txt", true)
+		xhr.send(null)
 	}
+	
+	// 使用jsonp完成模拟跨域请求
+	// var script = document.createElement("script")
+	//让script的src属性等于跨域请求地址即可，注意回调函数必须为全局定义的，不然可能无法调用
+	// script.src = "http://localhost:8080/static/jsonp/?callback=handleResponse"
+	// document.body.appendChild(script)
+	/*
+	* 1.客户端访问接口时传递一个本地函数名作为回调函数
+	* 2.接口获取参数得知回调函数名称，最后返回一段字符串，
+	* 		调用本地函数，并将要返回的数据作为参数传入该回调函数
+	* 3.客户端接收到之后构建script元素并插入文档中，相当于调用了该回调函数
+	* 后端代码类似于返回一段：
+	* 	callbcak({"name":"Danny"})
+	* 然后就相当于接收到了数据
+	*/
 }
+//使用jsonp完成模拟跨域请求定义的回调函数
+// function handleResponse(response){
+// 	console.log(response)
+// }
 
 
 

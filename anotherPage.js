@@ -25,6 +25,7 @@ AudioPlayer()
 function AudioPlayer(){
 	var audio = document.querySelector("#myAudio")
 	var duration = document.querySelector("#duration")
+	var progress = document.querySelector("#progress")
 	
 	function timeConversion(time){
 		var minute = Math.floor(time / 60)
@@ -32,13 +33,17 @@ function AudioPlayer(){
 		second = second.toString().length<2 ? '0'+second : second
 		return minute +":"+second
 	}
-	function durationText(){
-		return timeConversion(audio.currentTime)+" / "+timeConversion(audio.duration)
-	}
+	
 	audio.onloadedmetadata = function(){
-		duration.innerText = "0:00" + " / " + timeConversion(audio.duration)
-	}
-	audio.ontimeupdate = function(){
-		duration.innerText = durationText()
+		var alltime = audio.duration
+		
+		duration.innerText = "0:00" + " / " + timeConversion(alltime)
+		progress.max = 100
+		progress.value = 0
+		
+		audio.ontimeupdate = function(){
+			duration.innerText = timeConversion(audio.currentTime)+" / "+timeConversion(alltime)
+			progress.value = Math.floor((audio.currentTime / alltime) * 100)
+		}
 	}
 }
