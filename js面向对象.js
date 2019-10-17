@@ -1,28 +1,171 @@
+//工厂模式创建对象（过程封装）
+/*function Person(name, age){
+	var o = new Object()
+
+	o.name = name
+	o.age = age
+	o.sayname = function(){
+		console.log(this.name)
+	}
+
+	return o
+}
+new Person("qinxx", 30).sayname()*/
+
+//构造函数模式创建对象
+/*function Person(name, age){
+	if (this instanceof Person){
+		this.name = name
+		this.age = age
+		this.sayname = function(){
+			console.log(this.name)
+		}
+	} else {
+		return new Person(name, age)
+	}
+}
+//本来是错误的，缺少new操作符会将属性绑定到全局属性
+//但此处因为使用了特殊判定，所以结果仍然正确
+var p = new Person("qin",40)
+p.sayname() // “qin”
+*/
+
+// 组合使用构造函数模式和原型模式，前者定义实例属性，后者定义共享属性和方法
+/*function Person(name, age){
+	this.name = name
+	this.age = age
+}
+Person.prototype.sayname = function(){
+	console.log(this.name)
+}
+Person.money = "100块"
+var p = new Person("qin", 10)
+p.sayname()
+p.money = "10万"
+console.log(p.money)*/
+
+
+
+//动态原型模式创建对象
+/*function Person(name, age){
+	this.name = name
+	this.age = age
+
+	if (typeof this.sayname != 'function') {
+		this.sayname = function(){
+			console.log(this.name)
+		}
+	}
+}
+var p = new Person("qin", 20)
+p.sayname()*/
+
+//寄生构造函数创建对象，可以为一些特殊类型创建额外方法，例如数组。一般情况下不推荐使用
+//该方式创建的对象，与直接创建没有什么区别，也和构造函数本身的原型没有什么关系。所以不能通过instanceof判断对象类型
+/*function createArray(){
+	var values = new Array();
+
+	//添加值
+	values.push.apply(values, arguments)
+
+	//添加方法
+	values.print = function(){
+		console.log(values.join("--"))
+	}
+
+	//返回数组
+	return values
+}
+var arr = new createArray(1,2,3,4,5,6)
+arr.print()*/
+
+//稳妥构造函数模式，类似于寄生构造函数方式，创建的对象本质上还是Object类的实例
+//与直接在函数外部创建没有什么不同，所以依然无法使用instanceof操作符确定类型
+/*function Person(name){
+	var o = new Object()
+
+	//定义私有变量和函数
+	var secret = "只有函数内部方法可以访问我"
+
+	//添加公有方法
+	o.sayname = function(){
+		console.log(name)
+	}
+	o.getSecret = function(){
+		return secret
+	}
+
+	return o
+}
+var p = Person("qinxuyang")
+p.sayname()
+console.log(p.getSecret()) //错误*/
+
+
+
+
+
+
+/*
+* 面向对象之————继承
+* 
+ */
 function Parent(...names){
 	this.pmsg = "我是父类";
 	this.parent = names
+	console.log("父类构造函数被调用")
 }
 Parent.prototype.sayName = function(){
 	console.log(this.parent)
 }
-
 function Child(name,...parentsName){
-	//继承属性
+	//继承属性，使用借用构造函数法
 	Parent.apply(this, parentsName);
 	this.cmsg = "我是子类";
 	this.childName = name
 }
 
-// 借用构造函数法实现继承
-// Child.prototype = new Parent();
-// Child.prototype.constructor = Child;
-// Child.prototype.sayChildName = function(){
-// 	console.log(this.childName);
-// }
+// 借用组合方式实现继承————借用构造函数实现属性继承，原型链实现方法继承，缺点会调用两次父类构造函数
+/*Child.prototype = new Parent();  // 第一次调用父类构造函数
+Child.prototype.constructor = Child;
+Child.prototype.sayChildName = function(){
+	console.log(this.childName);
+}
+var child = new Child() // 第二次调用父类构造函数
+console.log(child.pmsg)*/
 
-// 寄生组合式继承
-function conbine(childFunc, parentFunc){
-	var proto = parentFunc.prototype; //复制父类原型
+
+// 原型式继承
+/*var obj = {
+	name: "qinxuyang",
+	sayName:function(){
+		console.log(this.name)
+	},
+	friends: ['Lyli']
+}
+var newObj = Object.create(obj, { // Object.create()复制给定对象，创建一个副本，第二个参数可选，定义了一些新属性。
+	age:{
+		value: 10
+	}
+})
+newObj.name = "liurunkun"
+newObj.friends.push("yimi")
+console.log(obj.friends)
+console.log(newObj.age)*/
+
+// Object.create()函数的原理
+/*function object(obj){
+	function f(){}
+	f.prototype = obj
+	return new f()
+}
+var p =  object(obj)
+console.log(p.friends)*/
+
+
+// 寄生组合式继承，为解决组合式继承总会调用两次父类构造函数的问题i
+/*function conbine(childFunc, parentFunc){
+	var proto = Object.create(parentFunc.prototype); //复制父类原型
 	//让子类原型的constructor属性指向子类的构造函数，若没有这一步则指向父构造函数
 	proto.constructor = childFunc; 
 	childFunc.prototype = proto;
@@ -30,10 +173,17 @@ function conbine(childFunc, parentFunc){
 conbine(Child, Parent);
 
 var instance = new Child("wo","father","mother");
-console.log(instance.sayName())
+instance.sayName()
+
+
+Object.keys(Child.prototype).forEach(function(item){
+	console.log(item)
+})*/
+
+
+
 
 // 私有变量
-
 /*function MyObect(){
 	//私有变量和私有函数
 	var privateVar = 10;
@@ -50,7 +200,7 @@ console.log(instance.sayName())
 var myObj = new MyObect();
 console.log(myObj.publicFun())*/
 
-//静态私有变量。类似于创建对象的组合方法，原型继承方法和共享属性，对象保存私有变量
+// 静态私有变量。类似于创建对象的组合方法，原型继承方法和共享属性，对象保存私有变量
 /*(function(){
 	//私有变量和私有函数(静态)
 	var privateVar = 10;
@@ -111,3 +261,56 @@ console.log(singleton.publicMethod());*/
 }();
 
 console.log(singleton)*/
+
+//函数绑定，将函数作为参数传递时保留其作用域
+/*var handler = {
+	message: "a message",
+	
+	print: function(item){
+		console.log(this.message+"\t"+item.toString())
+	}
+}
+
+var arr = [1,2,3,4,5]
+arr.forEach(handler.print) //错误，执行环境改变，无法访问message变量
+arr.forEach(handler.print.bind(handler)) // 正确*/
+
+/*
+ * 惰性载入函数 
+ */
+
+var flag = "Number" //模拟浏览器的能力
+
+function Func(){ //示例函数
+	//能力检测，兼容浏览器，但由于浏览器环境一般是不可能改变的
+	//所以实际上总是只会执行一种代码，其他代码是多余的。总是经过分支判断会影响性能
+	if(flag == "Array"){ 
+		return new Array()
+	}
+	else if (flag == "Number") {
+		return new Number()
+	}
+	else {
+		throw new Error("not availiable!")
+	}
+}
+// 1.运行时重载
+function create(){ //示例函数
+	if(flag == "Array"){ 
+		create = function () { //局部覆盖函数
+			return new Array()
+		}
+	}
+	else if (flag == "Number") {
+		create = function () {
+			return new Number()
+		}
+	}
+	else {
+		create = function () {
+			throw new Error("not availiable!")
+		}
+	}
+}
+create() // 运行以后发现函数已经被覆盖成了需要的版本，以后调用便不需要经过分支语句，从而节省性能
+console.log(create.toLocaleString())
