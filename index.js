@@ -481,4 +481,162 @@ function limit(){
 }
 
 
+/* 
+ *	自定义事件
+ */
+function EventTarget(){
+	this.handlers = {}
+}
+
+EventTarget.prototype = {
+	constuctor: EventTarget,
+	// 事件添加程序，参数：事件类型，处理函数
+	addHandler: function(type, handler){
+		//查看对应类型的事件是否已经注册。如传入message事件发现不存在，则创建该事件的数组，以便将来存放事件处理程序
+		if (!this.handlers[type]) {
+			this.handlers[type] = []
+		}
+		this.handlers[type].push(handler) //将事件处理程序添加至对应的事件数组中
+	},
+	// 触发事件
+	fire: function(event){//event对象必须是一个至少包含type属性的对象
+		if (!event.target) {
+			//事件对象中没有设置事件目标则先设置事件目标
+			event.target = this
+		}
+		//该事件是否已经注册
+		if (this.handlers[event.type] instanceof Array) {
+			this.handlers[event.type].forEach(function(handler){
+				handler(event); //将对应事件的数组里面面保存的方法挨个执行，并且传入事件对象
+			})
+		}
+	},
+	removeHandler: function(type, handler){
+		//该事件是否已经注册
+		if (this.handlers[type] instanceof Array) {
+			//将该事件从事件数组中移除
+			var handlers = this.handlers
+			for (var i=0; i<handlers.length; i++){
+				if (handlers[type] == handler) {
+					break;
+				}
+			}
+			this.handlers.splice(i, 1) //这里直接使用i是因为变量i使用var声明，循环外部也可以访问到
+		}
+	}
+}
+
+
+//拖动事件实现的类似原理
+
+/* node.style.position = "absolute"
+document.onmousemove = function(event){
+	console.log("hh")
+	node.style.left = event.clientX + "px"
+	node.style.top = event.clientY + "px"
+} */
+
+// 拖放界面的是实现方式，使用了模块模式封装（js面向对象.js文件中有示例）
+var DragDrop = function(){
+	// 记录正在拖动的对象，对象必须是绝对定位的
+	var dragging = null
+	// 完善拖动功能————设置光标在拖动元素中的位置
+	var diffX = 0, diffY = 0
+	//添加自定义事件
+	var dragdrop = new EventTarget() //创建上面定义的自定义事件对象
+	
+	function handleEvent(event){
+		//获取事件和目标,主要是浏览器兼容问题，此处可忽略
+		// some codes
+		var target = event.target
+		//确定事件类型
+		switch(event.type){
+			case "mousedown":
+				// 通过添加draggable类实现拖动，给元素添加draggable类，然后在此处做出判断
+				if(target.className.indexOf("draggable") > -1){
+					dragging = target //设置正在拖动的目标
+					
+					// 设置鼠标在拖动元素中的偏移值，完善用户体验，消除抖动感
+					diffX = event.clientX - target.offsetLeft
+					diffY = event.clientY - target.offsetTop
+					
+					//触发自定义事件————dragstart并传入事件对象
+					dragdrop.fire({
+						type: "dragstart", 
+						target: dragging, 
+						x: event.clientX,
+						y: event.clientY
+					})
+				}
+				break
+			
+			case "mousemove":
+				if (dragging !== null) {
+					//指定位置。
+					// 设置鼠标在拖动元素中的偏移值，完善用户体验，消除抖动感
+					// 注意频繁的DOM操作会使得系统性能下降
+					dragging.style.left = (event.clientX - diffX) + "px"
+					dragging.style.top = (event.clientY - diffY) + "px"	
+					
+					//触发自定义事件
+					dragdrop.fire({
+						type: "drag", 
+						target: dragging, 
+						x: event.clientX,
+						y: event.clientY
+					})
+				}
+				break
+			case "mouseup":
+				//触发自定义事件
+				dragdrop.fire({
+					type: "dragend", 
+					target: dragging, 
+					x: event.clientX,
+					y: event.clientY
+				})
+				
+				dragging = null //结束拖动，最后解引
+				break
+		}
+	}
+	//返回公共方法，此处使用的模块模式
+	/* return {
+		//启动
+		enable: function (){
+			document.addEventListener("mousedown", handleEvent, false)
+			document.addEventListener("mousemove", handleEvent, false)
+			document.addEventListener("mouseup", handleEvent, false)
+		},
+		//关闭
+		disable: function (){
+			document.removeEventListener("mousedown", handleEvent)
+			document.removeEventListener("mousemove", handleEvent)
+			document.removeEventListener("mouseup", handleEvent)
+		}
+	} */
+	
+	//下面使用的是增强的模块模式，创建并增强一个对象，最后返回，使得返回的对象支持了事件
+	dragdrop.enable = function(){
+		document.addEventListener("mousedown", handleEvent, false)
+		document.addEventListener("mousemove", handleEvent, false)
+		document.addEventListener("mouseup", handleEvent, false)
+	}
+	dragdrop.disable = function (){
+		document.removeEventListener("mousedown", handleEvent)
+		document.removeEventListener("mousemove", handleEvent)
+		document.removeEventListener("mouseup", handleEvent)
+	}
+	
+	return dragdrop
+}
+
+var dragTest = DragDrop()
+dragTest.enable() //开启拖动
+dragTest.addHandler("dragstart", function(event){
+	console.log("这是自定义事件dragstart，以及自定义event对象：")
+	console.log(event)
+})
+
+
 

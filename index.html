@@ -55,6 +55,7 @@
 			<button v-for="item in items" :class="itemClass()">{{item}}</button>
 		</div>
 	</div>
+	<div class="draggable">拖动测试区域</div>
 	<ul id="myMenu" class="list-group">
 		<li class="list-group">这是第一项</li>
 		<li class="list-group">这是第二项</li>
@@ -87,6 +88,14 @@
 </script>
 
 <style type="text/css">
+	.draggable{
+		background-color: lightgoldenrodyellow;
+		position: absolute; /* 该属性设置尤为重要 */
+		border: 1px solid black;
+		height: 30px;
+		line-height: 28px;
+		cursor: pointer;
+	}
 	#dragarea{
 		border: green 1px solid;
 		width: 300px;

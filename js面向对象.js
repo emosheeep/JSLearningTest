@@ -242,7 +242,7 @@ console.log(myObj1.publicFunc())*/
 }();//实际是一个对象
 console.log(singleton.publicMethod());*/
 
-//增强的单例模式，返回指定类型的单例
+//增强的模块模式，返回指定类型的单例
 /*var singleton = function() {
     var privateVariable = 10;
     function privateFun() {
