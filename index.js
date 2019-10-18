@@ -462,7 +462,23 @@ function ajax(){
 // 	console.log(response)
 // }
 
-
+//函数限流(js高级技巧)
+limit()
+function limit(){
+	function method(){
+		console.log("函数节流————鼠标进入过！ ")
+	}
+	// 限流函数
+	function limitFunc(fn){
+		clearTimeout(limitFunc.tid)
+		limitFunc.tid = setTimeout(fn, 1000)
+	}
+	var btn = document.querySelector("#postmsg")
+	
+	btn.onmouseenter = function(){
+		limitFunc(method)
+	}
+}
 
 
 
