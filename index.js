@@ -628,6 +628,7 @@ var DragDrop = function(){
 		document.removeEventListener("mouseup", handleEvent)
 	}
 	
+	//返回增强后的拖动对象，使其支持了事件功能
 	return dragdrop
 }
 
@@ -639,4 +640,259 @@ dragTest.addHandler("dragstart", function(event){
 })
 
 
+/*
+* 离线应用与客户端存储
+* 第23章
+*/
 
+// 离线检测
+isOnline()
+function isOnline(){
+	var flag = navigator.onLine ? "设备在线" : "设备离线"
+	console.log(flag)
+	
+	window.ononline = function (event) {
+		console.log("网络已连接！")
+	}
+	
+	window.onoffline = function(event){
+		console.log("网络已断开！")
+	}
+	
+	// 应用缓存
+	// console.log(applicationCache)
+	
+	// 获取cookie
+	// console.log(document.cookie)
+}
+
+/*
+ * web存储机制
+*/
+webStore()
+function webStore(){
+	
+	// sessionStorage对象，数据只能保存到浏览器关闭，其数据可以跨页面刷新而存在
+	// 仅针对会话的小段数据存储，如果需要跨会话存储数据，localStorage或globalStorage会更合适
+	
+	/* sessionStorage.setItem("name","丹尼")
+	sessionStorage.setItem("用户","珍妮")
+	console.log(sessionStorage) */
+	
+	//globalStorage 用户跨会话数据存储，但是有一定的限制
+	// 首先要指定那些域可以访问，可以使用方括号标记舒勇属性来实现
+	// window.globalStorage[location.host].name = "danny"
+	// 有的浏览器不兼容
+	
+	// localStorage 对象时Storage的实例，一样可以通过属性或是方法读取或者设置值
+	// 和gobalStorage一样，如果不清理缓存数据，将会一直保存下去
+	// localstorage相当于glbaoStorage[location.host]
+	/* console.log(typeof globalStorage) */
+	
+	/**
+	 * storage事件————对storage对象尽心任何修改，都会在文档上触发storage事件
+	 * 其event属性有以下属性：
+	 * domain：发生变化的存储空间的域名
+	 * key：设置或删除的键名
+	 * newValue：
+	 * oldValue：顾名思义
+	 */	
+	
+	//书上说使用document来侦听，但是我试过之后发现的用window对象才行
+	window.addEventListener("storage", function(event){
+		console.log("localStorage数据改动！！")
+		console.log(event)
+	}, false)
+	localStorage.setItem("newItem","newValue")
+	
+	
+	
+	/**
+	 * indexedDB数据库
+	 */
+	
+	var indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB
+	// 可以附带参数代表版本号，非必须
+	var request, request = indexedDB.open("administer") 
+	//异步方法
+	request.onsuccess = function(event){
+		// event.target就是request
+		console.log("indexedDB数据库打开/创建成功！")
+	}
+	request.onerror = function(event){
+		console.error("诗剧苦创建/打开失败")
+	}
+	request.onupgradeneeded = function(event){
+		// 数据库版本更新时创建表
+		var db = event.target.result
+		db.createObjectStore("users", {keyPath: "id",autoIncrement: true})
+	}
+	
+	// 获取表单元素
+	var indexForm = document.forms["indexedDB"]
+	
+	//添加数据按钮
+	indexForm.add.onclick = function(event){
+		var req = indexedDB.open("administer"),
+			user = {
+				username: indexForm.username.value,
+				age: indexForm.age.value
+			}
+		
+		// 如果值为空则什么也不做
+		if(user.username == "" && user.age == ""){
+			return
+		}
+		
+		req.onsuccess = function(event){
+			var db = event.target.result
+			
+			//创建事务
+			var transaction = db.transaction("users", "readwrite")
+			req = transaction.objectStore("users").add(user)
+			
+			req.onsuccess = function(event){
+				console.log("添加成功！")
+			}
+			req.onerror = function(event){
+				console.error("数据插入失败")
+			}
+			
+			transaction.onerror = function(){
+				console.error("事务未执行完成")
+			}
+			transaction.oncomplete = function(){
+				console.info("事务完成!")
+			}
+		}
+	}
+	
+	//查询数据按钮
+	indexForm.display.onclick = function(event){
+		var req = indexedDB.open("administer")
+		
+		req.onsuccess = function(event){
+			var db = event.target.result
+			
+			//创建事务
+			var transaction = db.transaction("users", "readonly")
+			// 游标遍历数据,创建游标
+			// 创建游标可传入参数，第一个参数为键范围，第二个参数为游标方向
+			// 也可以不传参数
+			var store = transaction.objectStore("users"),
+				cursorReq = store.openCursor()
+			
+			cursorReq.onsuccess = function(event){
+				var cursor = event.target.result //IDBCursor实例
+				if (cursor) { //如果没有下一项则为null
+					console.log("Key:"+cursor.key+","+"Value:"+JSON.stringify(cursor.value))
+					cursor.continue() //不指定参数则跳转至下一项
+				}
+			}
+			cursorReq.onerror = function(event){
+				console.error("查询失败")
+			}
+			
+			transaction.onerror = function(){
+				console.error("事务未执行完成")
+			}
+			transaction.oncomplete = function(){
+				console.info("事务完成!")
+			}
+		}
+	}
+	
+}
+
+
+/**
+ * PageVisibility API，页面是否隐藏
+ */
+// 检测页面是否可见，页面隐藏状态改变会触发事件
+/*document.addEventListener("webkitvisibilitychange", function(){
+	console.log(document.webkitHidden)
+	console.log(document.visibilityState)
+}, false) */
+
+/**
+ * Geolocation API，地理位置接口
+ */
+// 尝试获取地理位置，但是网站好像不能访问
+/* navigator.geolocation.getCurrentPosition(function(){
+	console.log("位置获取成功")
+}, function(error){
+	console.error(error.message)
+}) */
+
+/**
+ * File API，文件接口
+ */
+//FileReader类型————类似于XMLHttpRequeset，只不过读取的时文件系统而非远程服务器
+var filelist = document.querySelector("input[name='file']")
+filelist.onchange = function(event){
+	var fr = new FileReader(),
+		file = event.target.files[0]
+	
+	fr.readAsText(file)
+	fr.onerror = function(){
+		console.error("读取失败")
+	}
+	fr.onprogress = function(event){
+		if(event.lengthComputable){
+			console.log("读取进度：" + event.loaded + "/" + event.total)
+		}
+	}
+	fr.onload = function(){
+		console.log("Contents：" + fr.result)
+	}
+}
+
+/**
+ * 对象URL————图片预览等
+ */
+previewImg()
+function previewImg(){
+	//浏览器兼容方法
+	var createObjectURL = function(blob){
+		if (window.URL){
+			return window.URL.createObjectURL(blob)
+		} else if (window.webkitURL) {
+			return window.webkitURL.createObjectURL(blob)
+		} else {
+			return null
+		}
+	}
+	
+	var filelist = document.querySelector("input[name='pic']")
+	filelist.onchange = function(event){
+		var fr = new FileReader(),
+			file = event.target.files[0],
+			url = createObjectURL(file)
+			img = document.createElement("img")
+		
+		img.src = url
+		img.style.cssText = "width: 150px; float: right;"
+		document.body.insertBefore(img, document.body.childNodes[2])
+		console.log("图片插入成功！")
+	}
+}
+
+/**
+ * 结合拖动事件和FileReader接口和XMLHttpRequest对象，可以实现拖动上传
+ */
+
+
+/**
+ * Web Workers 使用
+ */
+/* work()
+function work(){
+	// webworker.js传入一个数组，计算数字之和
+	var worker = new Worker("webworker.js"),
+		nums = [1,2,3,4,5,6]
+	// 利用worker计算数组的和
+	worker.postMessage(nums) //将数据传到worker里面
+	worker.onmessage = function(event){
+		console.log(event.data)
+	}
+} */

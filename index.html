@@ -9,7 +9,16 @@
 	<script src="https://cdn.staticfile.org/vue/2.2.2/vue.min.js"></script>
 </head>
 <body>
-	<a href="anotherPage.html" >点击切换</a>
+	<a href="anotherPage.html" >点击跳转</a>
+	<div style="display: flex;"><span>添加文本：</span><input name="file" type="file" accept=".txt"/></div>
+	<div style="display: flex;"><span>添加图片：</span><input name="pic" type="file" accept="image/*"/></div>
+	<h4>indexedDB数据库操作</h4>
+	<form name="indexedDB">
+		<input type="text" name="username" required/>
+		<input type="number" name="age" required/>
+		<button type="button" name="add">添加数据</button>
+		<button type="button" name="display">显示数据</button>
+	</form>
 	<time datetime="2019-12-12" pubdate="pubdate"></time>
 	<h3 style="margin: 0;">身份证号光标<cite>自动切换</cite></h3>
 	<form name="identity">
@@ -88,6 +97,14 @@
 </script>
 
 <style type="text/css">
+	form[name='indexedDB']{
+		width: 400px;
+		border: 1px solid red;
+		padding: 5px;
+	}
+	form[name='indexedDB'] input{
+		width: 100px;
+	}
 	.draggable{
 		background-color: lightgoldenrodyellow;
 		position: absolute; /* 该属性设置尤为重要 */
