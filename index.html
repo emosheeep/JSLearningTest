@@ -33,6 +33,7 @@
 		<button class="btn btn-info" id="postmsg" draggable="true">发送消息</button>
 		<button class="btn btn-success" id="getInfo">获取数据</button>
 	</div> 
+	<canvas id="drawing" width="200" height="200">您的浏览器不支持画图功能</canvas>
 	<div id="dragarea" contenteditable>
 		<h4>自定义拖放区域</h4>
 	</div>
@@ -97,6 +98,14 @@
 </script>
 
 <style type="text/css">
+	h4::selection{
+		background-color: black;
+		color: white;
+	}
+	#drawing{
+		border: 1px solid red;
+		float: right;
+	}
 	form[name='indexedDB']{
 		width: 400px;
 		border: 1px solid red;

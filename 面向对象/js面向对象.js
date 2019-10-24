@@ -261,3 +261,4 @@ console.log(singleton.publicMethod());*/
 }();
 
 console.log(singleton)*/
+

@@ -713,14 +713,14 @@ function webStore(){
 	
 	var indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB
 	// 可以附带参数代表版本号，非必须
-	var request, request = indexedDB.open("administer") 
+	var request = indexedDB.open("administer") 
 	//异步方法
 	request.onsuccess = function(event){
 		// event.target就是request
 		console.log("indexedDB数据库打开/创建成功！")
 	}
 	request.onerror = function(event){
-		console.error("诗剧苦创建/打开失败")
+		console.error("数据库创建/打开失败")
 	}
 	request.onupgradeneeded = function(event){
 		// 数据库版本更新时创建表
@@ -896,3 +896,95 @@ function work(){
 		console.log(event.data)
 	}
 } */
+
+
+/**
+ * canvas绘图
+ */
+draw()
+function draw(){
+	var drawing = document.querySelector("#drawing")
+	
+	//首先检测getContext()方法是否存在
+	if(drawing.getContext){
+		var context = drawing.getContext("2d")
+		
+		// context.globalAlpha = 0.5  // 全局透明度
+		
+		// 设置阴影
+		context.shadowOffsetX = 2
+		context.shadowOffsetY = 2
+		context.shadowBlur = 5
+		context.shadowColor = "grey"
+
+		// context.globalCompositeOperation = "copy" //设置合成模式，该行设置了永远取最后一次的绘制结果，可用于刷新
+
+		//填充矩形
+		context.fillStyle = "lightgreen"
+		context.fillRect(0, 0, 50, 50)
+		context.fillStyle = "rgba(0, 0, 255, 0.5)"
+		context.fillRect(20, 20, 50, 50)
+		
+		//描边矩形
+		context.strokeStyle = "red"
+		context.strokeRect(10, 10, 50, 50)
+		
+		//清除画布指定区域内容
+		context.clearRect(40, 40, 10, 10)
+		
+		//创建一个线性渐变
+		var gradient = context.createLinearGradient(0, 70, 40, 110)
+		gradient.addColorStop(0, "purple")
+		gradient.addColorStop(1, "pink")
+		
+		// 绘制路径
+		context.fillStyle = gradient //线性渐变矩形
+		context.beginPath()
+		context.rect(0, 70, 40, 40) //记得和渐变位置坐标对应起来
+		context.fill() // 路径填充
+		
+		gradient = context.createRadialGradient(20, 130, 3, 20, 130, 30)
+		gradient.addColorStop(0, "white")
+		gradient.addColorStop(1, "black")
+		
+		context.fillStyle = gradient //径向渐变矩形
+		context.fillRect(0, 110, 40, 40) //创建矩形
+		
+		//绘制曲线
+		context.beginPath()
+		context.bezierCurveTo(0, 200, 90, 200, 100, 0)
+		context.stroke() //路径描边
+		
+		/**
+		 * 绘制一个钟表
+		 */
+		context.fillStyle = "black"
+		context.strokeStyle = "black" 
+		//路径开始
+		context.beginPath()
+		//绘制外圆
+		context.arc(150, 150, 50, 0, 2 * Math.PI, false) 
+		//绘制内圆
+		context.moveTo(197, 150)
+		context.arc(150, 150, 47, 0, 2 * Math.PI, false) 
+		
+		//变换原点
+		context.translate(150, 150)
+		
+		// 绘制分针	
+		context.moveTo(0, 0)
+		context.lineTo(0, -35) 
+		
+		// 绘制时针
+		
+		context.moveTo(0, 0)
+		context.lineTo(-25, 0) 
+		// 路径描边
+		context.stroke()
+		//绘制文本
+		context.font = "bold 10px Arial"
+		context.textAlign = "center"
+		context.textBaseline = "middle"
+		context.fillText("12", 0, -40)
+	}
+}

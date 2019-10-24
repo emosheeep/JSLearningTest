@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>test</title>
+</head>
+<body>
+
+</body>
+<!-- <script src="js设计模式.js"></script> -->
+<script>
+	// function p(){
+	// 	this.p = "父类实例属性"
+	// }
+	// p.prototype.getP = function (){
+	// 	console.log(this.p)
+	// }
+	// function c(){
+	// 	this.c = "子类实例属性"
+	// }
+
+	// function d(){}
+	// d.prototype = new p()
+
+	
+	// // c.prototype = Object.create(new p())
+	
+	// c.prototype = new d()
+	// c.prototype.constructor = c
+
+	// var newc = new c()
+
+	// newc.getP()
+	// console.log(newc)
+	// console.log(c.prototype.constructor)
+	// // var newp = new p()
+	// // newp.getP()
+	
+	//------------------------抽象工厂模式
+//定义抽象工厂
+var AbstractFactory = function(childClass, parentClass){ 
+	// 判断是否存在抽象类
+	if (typeof AbstractFactory[parentClass] === 'function') { //  寄生式继承
+		var F = function(){}  //定义一个过渡类
+		//继承抽象类的实例属性和原型中的方法
+		//实例属性和原型属性是不一样的，实例的属性属于实例，是实例自己的。而原型属性属于所有实例，是共有的
+		//从继承的角度来讲，将父类的所有属性方法（即父类原型中的属性和方法与父类实例中的属性和方法）全部
+		//添加到子类原型中才是最终目标，这样子类的所有实例都会附带父类的方法和属性
+		F.prototype = new AbstractFactory[parentClass]() //利用过渡类将父类实例属性转化为原型属性
+		
+		//子类原型继承父类,注意这里需要继承父类的属性，所以要new一下
+		
+		console.log(childClass.prototype)
+		// 修正constructor属性
+		childClass.prototype = new F()
+		childClass.prototype.constructor = childClass 
+		console.log(childClass.prototype)
+	} else {
+		throw new Error('未创建该抽象类！')
+	}
+}
+
+AbstractFactory.Car = function(){	// 在工厂中定义抽象类
+	this.type = 'car' // 定义抽象类的属性
+}
+AbstractFactory.Car.prototype = { //定义抽象类的方法
+	constructor: AbstractFactory.Car,
+	getPrice: function(){
+		throw new Error('抽象方法不能直接调用！')
+	},
+	getSpeed: function(){
+		throw new Error('抽象方法不能直接调用！')
+	}
+}
+AbstractFactory.Bus = function(){	// 在工厂中定义抽象类
+	this.type = 'bus' // 定义抽象类的属性
+}
+AbstractFactory.Bus.prototype = { //定义抽象类的方法
+	getPrice: function(){
+		throw new Error('抽象方法不能直接调用！')
+	},
+	getSpeed: function(){
+		throw new Error('抽象方法不能直接调用！')
+	}
+}
+console.log(AbstractFactory.Car.prototype)
+//抽象工厂实现
+//兰博基尼子类
+function Lamborghini(price, speed){
+	this.price = price
+	this.speed = speed
+}
+//调用工厂加工子类
+AbstractFactory(Lamborghini, 'Car')
+//必须重写继承来的抽象方法，否则会出错
+Lamborghini.prototype.getPrice = function(){
+	console.log(this.price)
+	return this.price
+}
+Lamborghini.prototype.getSpeed = function(){
+	console.log(this.speed)
+	return this.speed
+}
+// 实例化兰博基尼对象
+/*var car = new Lamborghini(100, '300km/h')
+console.log(car.type)
+car.getPrice()
+console.log(car instanceof AbstractFactory.Car)*/
+</script>
+</html>
