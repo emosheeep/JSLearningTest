@@ -177,20 +177,14 @@ console.log(js)*/
 
 //------------------------抽象工厂模式
 //定义抽象工厂
-var AbstractFactory = function(childClass, parentClass){ 
+/*var AbstractFactory = function(childClass, parentClass){ 
 	// 判断是否存在抽象类
 	if (typeof AbstractFactory[parentClass] === 'function') { //  寄生式继承
 		var F = function(){}  //定义一个过渡类
-		//继承抽象类的实例属性和原型中的方法
-		//实例属性和原型属性是不一样的，实例的属性属于实例，是实例自己的。而原型属性属于所有实例，是共有的
-		//从继承的角度来讲，将父类的所有属性方法（即父类原型中的属性和方法与父类实例中的属性和方法）全部
-		//添加到子类原型中才是最终目标，这样子类的所有实例都会附带父类的方法和属性
 		F.prototype = new AbstractFactory[parentClass]() //利用过渡类将父类实例属性转化为原型属性
 		childClass.constructor = childClass // 修正constructor属性
 		//子类原型继承父类,注意这里需要继承父类的属性，所以要new一下
 		childClass.prototype = new F()
-		
-		console.log(childClass.constructor)
 	} else {
 		throw new Error('未创建该抽象类！')
 	}
@@ -217,18 +211,18 @@ AbstractFactory.Bus.prototype = { //定义抽象类的方法
 	getSpeed: function(){
 		throw new Error('抽象方法不能直接调用！')
 	}
-}
+}*/
 
 //抽象工厂实现
 //兰博基尼子类
-var Lamborghini = function(price, speed){
+/*var Lamborghini = function(price, speed){
 	this.price = price
 	this.speed = speed
 }
-//调用工厂加工子类
-AbstractFactory(Lamborghini, 'Car')
-//必须重写继承来的抽象方法，否则会出错
-Lamborghini.prototype.getPrice = function(){
+
+AbstractFactory(Lamborghini, 'Car')//调用工厂加工子类实现继承
+
+Lamborghini.prototype.getPrice = function(){//必须重写继承来的抽象方法，否则会出错
 	console.log(this.price)
 	return this.price
 }
@@ -236,8 +230,74 @@ Lamborghini.prototype.getSpeed = function(){
 	console.log(this.speed)
 	return this.speed
 }
-// 实例化兰博基尼对象
-var car = new Lamborghini(100, '300km/h')
+
+var car = new Lamborghini(100, '300km/h')// 实例化兰博基尼对象
 console.log(car.type)
 car.getPrice()
-console.log(car instanceof AbstractFactory.Car)
+console.log(car instanceof AbstractFactory.Car)*/
+
+//---------------------建造者模式
+//建造者模式会关注创建的细节，用它创造出来的对象一般是复合对象，即对象中包含对象
+
+var Human = function(param){ //创建一位人类
+	this.skill = param && param.skill || '保密'  //技能
+	this.hobby = param && param.hobby || '保密'  //兴趣爱好
+}
+Human.prototype = { //定义人类的方法
+	getSkill: function(){
+		return this.skill
+	},
+	getHobby: function(){
+		return this.hobby
+	}
+}
+var Name = function(name){//定义姓名类
+	this.wholeName = name
+
+	var position = name.indexOf(' ') //解析姓名
+	if(position > -1){
+		this.firstName = name.substring(0, position)
+		this.secondName = name.substring(position)
+	}
+}
+var Work = function(work){//定义工作类
+	switch(work){ //根据相关的职位进行不同的初始化
+		case 'code':
+			this.work = '工程师'
+			this.workDescription = '每天沉迷于编程'
+			break
+		case 'UI':
+		case 'UE':
+			this.work = '设计师'
+			this.workDescription = '设计是一种艺术'
+			break
+		default:
+			this.work = work
+			this.workDescription = '暂无相关描述'
+	}
+}
+Work.prototype = { //定义工作类的方法
+	changeWork: function(work){
+		this.work = work
+	},
+	changDescription: function(sentence){
+		this.workDescription = sentence
+	}
+}
+
+//创建一个工厂，用来实例化一位应聘者
+var Person = function(name, work, param){
+	//创建应聘者的缓存对象
+	var _person = new Human(param)
+	//增强对象
+	_person.name = new Name(name) //初始化应聘者姓名
+	_person.work = new Work(work) //初始化应聘者工作
+	//将创建的应聘者返回
+	return _person 
+}
+//测试
+var person = Person("Jorge wiliam", 'UI', { hobby: '篮球' })
+
+console.log(person)
+person.work.changDescription('我是一名快乐的设计师')
+console.log(person)
