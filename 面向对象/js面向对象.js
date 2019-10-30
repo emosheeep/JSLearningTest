@@ -226,7 +226,7 @@ console.log(myObj.publicFunc())
 console.log(myObj1.publicFunc())*/
 
 // 模块模式（为单例创建私有变量和特权方法，前面是为自定义对象类型创建）
-/*var singleton = function() {
+var singleton = function() {
     var privateVariable = 10;
     function privateFun() {
         return false;
@@ -240,7 +240,7 @@ console.log(myObj1.publicFunc())*/
         }
     };
 }();//实际是一个对象
-console.log(singleton.publicMethod());*/
+console.log(singleton.publicMethod());
 
 //增强的模块模式，返回指定类型的单例
 /*var singleton = function() {

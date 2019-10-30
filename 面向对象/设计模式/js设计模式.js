@@ -110,7 +110,9 @@ console.log(book1 instanceof Book)*/
 /**
  * ---------------------设计模式------------------------
  */
-
+/**
+ * --------------------创建型设计模式---------------------------
+ */
 //------------------------普通工厂模式
 
 /*var Java = function(content){//定义需要的类
@@ -239,7 +241,7 @@ console.log(car instanceof AbstractFactory.Car)*/
 //---------------------建造者模式
 //建造者模式会关注创建的细节，用它创造出来的对象一般是复合对象，即对象中包含对象
 
-var Human = function(param){ //创建一位人类
+/*var Human = function(param){ //创建一位人类
 	this.skill = param && param.skill || '保密'  //技能
 	this.hobby = param && param.hobby || '保密'  //兴趣爱好
 }
@@ -300,4 +302,70 @@ var person = Person("Jorge wiliam", 'UI', { hobby: '篮球' })
 
 console.log(person)
 person.work.changDescription('我是一名快乐的设计师')
-console.log(person)
+console.log(person)*/
+
+//------------------------------------------原型模式
+//主要是指继承的思想，此处略过。但是有一些注意点
+//将一些简单而又差异化的属性放在构造函数中
+//将消耗资源比较大的方法放在原型中
+
+//------------------------------------------单例模式
+//可以用来定义命名空间，管理一组方法，还可以设置静态变量
+//单例模式一般只允许实例化一次对象，主要是为了节省内存空间
+//有时候单例需要延迟创建，我们可以使用惰性载入的方法，根据代码实际运行的环境来决定创建成什么样子
+
+
+/**
+ * ---------------------------结构型设计模式------------------------------
+ */
+//-----------------------------------外观模式
+//主要用来兼容不同的环境，将众多的底层接口有组织的组合成一个高级接口，方便使用者调用
+//浏览器中的兼容方案
+/*var EventUtil = {
+	//添加事件的浏览器兼容方式
+	addEvent: function(dom, eventType, fn){
+		if (dom.addEventListener) {
+			dom.addEventListener(eventType, fn, false) //DOM2级方法
+		} else if (dom.attachEvent) {
+			dom.attachEvent('on'+eventType, fn) //兼容IE
+		} else {
+			dom['on'+eventType] = fn //DOM0级方法
+		}
+	},
+	//获取事件对象
+	getEvent: function(event){
+		return event || window.event
+	},
+	//获取事件目标
+	getTarget: function(event){
+		var event = this.getEvent(event)
+		return event.target || event.srcElement
+	},
+	//阻止默认行为
+	preventDefault: function(event){
+		var event = this.getEvent(event)
+		if (event.preventDefault) {
+			event.preventDefault() // 标注浏览器
+		} else {
+			event.returnValue = false // IE
+		}
+	}
+}*/
+
+//-----------------------------------------适配器模式
+//适配器模式主要用来将一个接口转换成另一个接口，例如因为后端改变导致后端发送的数据结构发生改变
+//前端就需要重组这些数据以保持共嗯那个的不变，这就是一个类似的适配器的例子，与外观模式不同的是
+//外观模式重在包装，重在将繁多的接口封装成简单的接口，减少接口数量，增加易用性
+//适配器模式重在对不同系统之间的适配，充当一个中间层的角色，例如适配代码库，适配前后端数据
+
+//-----------------------------------------代理模式
+//主要运用在跨域上——图像Ping，JSONP，Proxy
+
+var events = require('events')
+var proxy = new events.EventEmitter()
+proxy.on('done',function(data){
+	console.log(data)
+})
+proxy.emit('done',{
+	name: 'qin'
+})

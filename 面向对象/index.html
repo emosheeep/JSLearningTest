@@ -6,7 +6,6 @@
 <body>
 
 </body>
-<!-- <script src="js设计模式.js"></script> -->
 <script>
 /* 	function p(){
 		this.p = "父类实例属性"
@@ -111,10 +110,12 @@ function jicheng(child, parent){
 	function F(){}
 	F.prototype = new parent()
 	
-	child.prototype = parent.prototype
+	// child.prototype = parent.prototype
 	// child.prototype = new parent()
-	// child.prototype = Object.create(new parent())
+	child.prototype = Object.create(new parent())
 	// child.prototype = new F()
+	
+	child.prototype.constructor = child
 }
 function parent(){
 	this.name = "我是父类"
@@ -129,11 +130,13 @@ jicheng(child, parent)
 
 console.log(parent.prototype)
 console.log(child.prototype)
-child.prototype = {}
-child.prototype.newFun = function(){}  
+// child.prototype = {}
+// child.prototype.newFun = function(){}  
 console.log(parent.prototype)
 console.log(child.prototype)
 
+var a = new child()
+console.log(a)
 
 </script>
 </html>
