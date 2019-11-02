@@ -206,7 +206,6 @@ news.add(
 		)
 	)
 ).show()
-console.log(news)
 
 
 /**
@@ -307,7 +306,7 @@ form.add(
 		new FormInput({name: 'reset', type: 'reset', value: '重置'})
 	)
 ).show()
-console.log(form)
+
 /**
  * 成员类
  */
