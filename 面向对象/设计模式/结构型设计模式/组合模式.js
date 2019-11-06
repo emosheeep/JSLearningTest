@@ -185,7 +185,7 @@ TypeNews.prototype.init = function(){
 var news = new UL("first-container",document.body)
 news.add(
 	new LI("first-item").add(
-		new ImageNews({src:"test.jpeg"})
+		new ImageNews({src:"../test.jpeg"})
 	).add(
 		new IconNews({
 			text: "太阳会从东边升起嘛", 
@@ -196,7 +196,7 @@ news.add(
 ).add(
 	new LI("second-item").add(
 		new Group("conbine-news").add(
-			new ImageNews({src:"test.jpeg"})
+			new ImageNews({src:"../test.jpeg"})
 		).add(
 			new TypeNews({
 				type:'MUSIC',
