@@ -134,3 +134,69 @@ hideUrl.onchange = function(event){
 		Mediator.send("showAllNavUrl")
 	}
 }
+
+/**
+ * 利用中介者模式控制盒子上下移动
+ */
+//插入测试元素
+div = document.createElement('div')
+div.innerHTML = `<div id='box'
+					  style='width: 50px;
+							 height: 50px;
+							 background-color: red;
+							 position: absolute;
+							 top: 140px;left: 100px'>
+				</div>`.trim()
+document.body.appendChild(div)
+
+var move = function(id, type){
+	var box = document.getElementById(id),
+		_top = parseInt(box.style.top.slice(0, -2)),
+		_left = parseInt(box.style.left.slice(0, -2)) 
+	
+	switch(type){
+		case "up":
+			box.style.top = (_top-20) + "px"
+			break
+		case "down":
+			box.style.top = (_top+20) + "px"
+			break
+		case "left":
+			box.style.left = (_left-20) + "px"
+			break
+		case "right":
+			box.style.left = (_left+20) + "px"
+			break
+	}
+}
+//注册事件
+Mediator.register("up", function(){
+	move("box", "up")
+})
+Mediator.register("down", function(){
+	move("box", "down")
+})
+Mediator.register("right", function(){
+	move("box", "right")
+})
+Mediator.register("left", function(){
+	move("box", "left")
+})
+
+window.onkeydown = function(event){
+	console.log(event.key)
+	switch(event.key){
+		case "ArrowUp":
+			Mediator.send("up")
+			break
+		case "ArrowDown":
+			Mediator.send("down")
+			break
+		case "ArrowLeft":
+			Mediator.send("left")
+			break
+		case "ArrowRight":
+			Mediator.send("right")
+			break
+	}
+}
