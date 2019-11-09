@@ -120,11 +120,11 @@ lazyLoad.prototype = {
 		var _this = this
 		this.on(window, 'resize', function(){
 			// 节流处理更新逻辑
-			throttle(_this.update, {context: _this, delay: 100})
+			throttle(_this.update, {context: _this, delay: 200})
 		})
 		this.on(window, 'scroll', function(){
 			// 节流处理更新逻辑
-			throttle(_this.update, {context: _this, delay: 100})
+			throttle(_this.update, {context: _this, delay: 200})
 		})
 	}
 }
