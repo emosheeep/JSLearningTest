@@ -63,17 +63,18 @@ lazyLoad.prototype = {
 			return
 		}
 		// 获取图片长度
-		var i = this.imgs.length - 1
-		for (; i>=0; i--) {
+		var _this = this
+		this.imgs.forEach(function(item, index, arr){
 			// 如果图片在可视范围内
-			if (this.shouldShow(i)) {
+			if (_this.shouldShow(item)) {
 				// 加载图片
-				this.imgs[i].src = this.imgs[i].getAttribute("data-src")
+				item.src = item.getAttribute("data-src")
 				// 清除缓存中对应的图片
-				this.imgs.splice(i, 1)
+				arr.splice(index, 1)
+				console.log(item)
 				console.log("图片加载")
 			}
-		}
+		})
 	},
 	// 利用递归获取纵坐标
 	pageY (element) {
@@ -85,11 +86,9 @@ lazyLoad.prototype = {
 		}
 	},
 	// 筛选需要加载的图片
-	shouldShow (i) {
-		// 获取当前图片
-		var img = this.imgs[i],
-			// 可视范围顶部高度
-			scrollTop = document.documentElement.scrollTop || document.body.scrollTop,
+	shouldShow (img) {
+		// 可视范围顶部高度
+		var	scrollTop = document.documentElement.scrollTop || document.body.scrollTop,
 			// 可视范围底部高度
 			scrollBottom = scrollTop + document.documentElement.clientHeight,
 			imgTop = this.pageY(img),
@@ -121,11 +120,11 @@ lazyLoad.prototype = {
 		var _this = this
 		this.on(window, 'resize', function(){
 			// 节流处理更新逻辑
-			throttle(_this.update, {context: _this})
+			throttle(_this.update, {context: _this, delay: 100})
 		})
 		this.on(window, 'scroll', function(){
 			// 节流处理更新逻辑
-			throttle(_this.update, {context: _this})
+			throttle(_this.update, {context: _this, delay: 100})
 		})
 	}
 }
@@ -139,23 +138,25 @@ div.innerHTML = `
 	<div style="border: 2px solid red; height: 1000px;">
 		我是占位的
 	</div>
-	<img src="" alt="" data-src="../test.jpeg">
-	<img src="" alt="" data-src="../test.jpeg">
-	<img src="" alt="" data-src="../test.jpeg">
-	<img src="" alt="" data-src="../test.jpeg">
+	<img src="../fail.png" alt="" data-src="../test.jpeg">
+	<img src="../fail.png" alt="" data-src="../test.jpeg">
+	<img src="../fail.png" alt="" data-src="../test.jpeg">
+	<img src="../fail.png" alt="" data-src="../test.jpeg">
 	<div style="border: 2px solid red; height: 1000px;">
 		我是占位的
 	</div>
-	<img src="" alt="" data-src="../test.jpeg">
-	<img src="" alt="" data-src="../test.jpeg">
-	<img src="" alt="" data-src="../test.jpeg">
-	<img src="" alt="" data-src="../test.jpeg">
-	<img src="" alt="" data-src="../test.jpeg">
+	<img src="../fail.png" alt="" data-src="../test.jpeg">
+	<img src="../fail.png" alt="" data-src="../test.jpeg">
+	<img src="../fail.png" alt="" data-src="../test.jpeg">
+	<img src="../fail.png" alt="" data-src="../test.jpeg">
+	<img src="../fail.png" alt="" data-src="../test.jpeg">
+	<img src="../fail.png" alt="" data-src="../test.jpeg">
 	<div style="border: 2px solid red; height: 1000px;">
 		我是占位的
 	</div>
-	<img src="" alt="" data-src="../test.jpeg">
-	<img src="" alt="" data-src="../test.jpeg">
+	<img src="../fail.png" alt="" data-src="../test.jpeg">
+	<img src="../fail.png" alt="" data-src="../test.jpeg">
+	<img src="../fail.png" alt="" data-src="../test.jpeg">
 </div>
 `
 document.body.appendChild(div)
