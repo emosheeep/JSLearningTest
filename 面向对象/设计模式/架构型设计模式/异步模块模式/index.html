@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>异步模块</title>
+    <script src="lib/index.js"></script>
+    <style>
+        #demo {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="demo">demo</div>
+<script>
+    const setInter = setInterval(() => {
+        if(window.F) {
+            F.module(['./js/event', './js/dom'], function (event, dom) {
+                event.on('demo', 'click', function() {
+                    dom.html('demo', 'success');
+                });
+            });
+            clearInterval(setInter);
+        }
+    }, 10);
+</script>
+</body>
+</html>
