@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Widget模式</title>
+	</head>
+	<body>
+		<textarea id="demo_tag">
+			<div id="tag_cloud">
+				{% for (var i=0,len = tagCloud.length; i<len; i++){
+					var ctx = tagCloud[i]; %}
+					<a href="#" class="tag_item 
+					{% if(ctx["is_selected"]){ %}
+						selected
+					{% } %}
+					" title="
+					{%=ctx["title"]%}">{%=ctx["text"]%}</a>
+				{% } %}
+			</div>
+		</textarea>
+		<div id="test"></div>
+	</body>
+	<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+	</script>
+	<script src="../异步模块模式/lib/index.js"></script>
+	<script src="lib/index.js"></script>
+</html>

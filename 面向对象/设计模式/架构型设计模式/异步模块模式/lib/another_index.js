@@ -101,7 +101,6 @@
 		setModule(url, [], callback);
 	}
 	F.module = function(...args){
-		console.log(args)
 		var callback = args.pop(),
 			// 未加载模块数量统计
 			depsCount = 0,

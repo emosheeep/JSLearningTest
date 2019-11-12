@@ -52,7 +52,6 @@ var F = (function(){
 					// 解析模块路由
 					route = item.split('.')
 					// 遍历路由层级
-					console.log(route)
 					route.forEach(function(route){
 						// 重置父模块，向下深入
 						parent = parent[route] || false

@@ -74,7 +74,6 @@
 			_module.onload.forEach(function(fn){
 				fn(_module.exports);
 			})
-			console.log(moduleCache)
         } else {
             // 模块不存在，未被调用过（匿名模块），则直接执行回调函数
             callback && callback.apply(null, params);
@@ -102,7 +101,6 @@
         let params = [];
         // 未加载的依赖模块数量统计
         let depsCount = 0;
-		console.log(url)
         if(deps.length) {
 			deps.forEach(function(item, index){
 				// 增加未加载依赖模块数量统计
