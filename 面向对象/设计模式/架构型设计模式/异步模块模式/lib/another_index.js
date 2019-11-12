@@ -1,3 +1,9 @@
+/**
+ * 将异步模块模式中的module方法分离成类似于同步模式中moudle和define两个方法的版本
+ * define用来定义模块
+ * module用来获取模块
+ * 拆分开便于理解，但是写在一起更为简洁
+ */
 (function(F) {
     // 模块缓存器。存储已创建模块
     let moduleCache = {};
@@ -64,6 +70,7 @@
      */
     function setModule(moduleName, params, callback) {
         // 如果模块被调用过
+		console.log(moduleName)
         if(moduleCache[moduleName]) {
             let _module = moduleCache[moduleName];
             // 设置模块已经加载完成
@@ -81,13 +88,54 @@
         }
     }
 
+	F.define = function(url, callback){
+		// 在模块缓存器中矫正该模块，并执行构造函数
+		// loadScript函数执行引发对应外部js文件执行，于是define函数执行，
+		// 然后到了现在你看到的这个地方，接下来调用 setModule函数
+		// 其实在loadScript函数执行之前，url已经通过loadModule添加到moduleCache中了
+		// 所以调用define函数的时候moduleCache中已经有了url对应的模块
+		// 所以setModule中第一个条件判断成功，将会执行，触发回调函数并传入参数
+		// 如果url对应的模块没有加入moduleCache，将会导致执行else中的语句
+		// 直接执行回调函数,没有任何参数传入
+		// define函数表面是用来定义函数的，实际在这个上下文中却起到了执行函数的作用
+		setModule(url, [], callback);
+	}
+	F.module = function(...args){
+		console.log(args)
+		var callback = args.pop(),
+			// 未加载模块数量统计
+			depsCount = 0,
+			// 依赖模块序列
+			params = []
+		if (args.length == 0){
+			return
+		} else {
+			args.forEach(function(item, index){
+				// 增加未加载依赖模块数量统计
+				depsCount++;
+				// 异步加载依赖模块
+				loadModule(item, function(mod) {
+				    // 依赖模块序列中添加依赖模块数量统一减一
+				    depsCount--;
+					// 将模块加载后得到的结果按顺序存入params中
+					// 其实就是已经加载好的模块
+				    params[index] = mod;
+				    // 如果依赖模块全部加载
+				    if(depsCount === 0) {
+				        // 在模块缓存器中矫正该模块，并执行构造函数
+				        setModule(item, params, callback);
+				    }
+				});
+			})
+		}
+	}
     /**
      * 创建或调用模块方法
      * @param url           模块url
      * @param modDeps       依赖模块
      * @param modCallback   模块主函数
      */
-    F.module = function(url, modDeps, modCallback) {
+    /* F.module = function(url, modDeps, modCallback) {
         // 将参数转化为数组
         let args = [].slice.call(arguments);
         // 获取模块构造函数（参数数组中最后一个参数成员）
@@ -102,12 +150,12 @@
         let params = [];
         // 未加载的依赖模块数量统计
         let depsCount = 0;
-		console.log(url)
+
         if(deps.length) {
 			deps.forEach(function(item, index){
 				// 增加未加载依赖模块数量统计
 				depsCount++;
-				// 异步加载依赖模块,将依赖信息录入moduleCache中
+				// 异步加载依赖模块
 				loadModule(item, function(mod) {
 				    // 依赖模块序列中添加依赖模块数量统一减一
 				    depsCount--;
@@ -117,7 +165,6 @@
 				    // 如果依赖模块全部加载
 				    if(depsCount === 0) {
 				        // 在模块缓存器中矫正该模块，并执行构造函数
-						// 激活并执行
 				        setModule(url, params, callback);
 				    }
 				});
@@ -128,16 +175,8 @@
             setModule(url, [], callback);
 			// 如果url不存在则立即执行回调函数
         }
-    }
+    } */
 })((function() {
     // 创建模块管理器对象F，并保存在全局作用域中
     return window.F = {};
 })());
-
-
-/**
- * 对于F.module函数
- * 可以定义模块，也可以加载模块
- * 定义模块时单独写一个文件
- * 加载模块需要先定义才行
- */

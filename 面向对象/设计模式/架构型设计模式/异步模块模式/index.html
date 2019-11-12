@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>异步模块</title>
-    <script src="lib/index.js"></script>
     <style>
         #demo {
             cursor: pointer;
@@ -12,17 +11,21 @@
 </head>
 <body>
 <div id="demo">demo</div>
+<script src="lib/index.js"></script>
+<!-- <script src="lib/another_index.js"></script> -->
 <script>
-    const setInter = setInterval(() => {
-        if(window.F) {
-            F.module(['./js/event', './js/dom'], function (event, dom) {
-                event.on('demo', 'click', function() {
-                    dom.html('demo', 'success');
-                });
-            });
-            clearInterval(setInter);
-        }
-    }, 10);
+	//index.js加载两个模块
+	F.module(['./js/event', './js/dom'], function (event, dom) {
+	    event.on('demo', 'click', function() {
+	        dom.html('demo', 'success');
+	    });
+	});
+	// another_index.js加载两个模块
+	/* F.module('./js/event', './js/dom', function(event, dom){
+		event.on('demo', 'click', function() {
+		    dom.html('demo', 'success');
+		});
+	}) */
 </script>
 </body>
 </html>
